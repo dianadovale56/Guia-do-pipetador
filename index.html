@@ -173,9 +173,6 @@
   function ativarFullscreenRetrato() {
     const elem = document.documentElement;
 
-    // Solicita fullscreen
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen().then(() => {
         // Tenta travar em modo retrato
         if (screen.orientation && screen.orientation.lock) {
           screen.orientation.lock('portrait').catch(function(error) {
