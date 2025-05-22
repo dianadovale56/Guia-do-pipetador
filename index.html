@@ -1,21 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Placa de qPCR - 96 Poços</title>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      background-color: #f9f9f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       overflow: hidden;
       font-family: Arial, sans-serif;
-      touch-action: manipulation;
+      background-color: #000;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+      font-size: 1.2em;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #overlay button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #0097b2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #rotated {
+      display: none;
       transform: rotate(-90deg);
       transform-origin: center center;
       width: 100vh;
@@ -27,7 +54,7 @@
       margin-left: -50vh;
       background-image: url('fundo.png');
       background-size: 48vh 215vw;
-      background-position: right -90%;         
+      background-position: right -90%;
     }
 
     .main-container {
@@ -98,78 +125,32 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       white-space: nowrap;
     }
-
-    #overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: rgba(0,0,0,0.75);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.2em;
-      z-index: 9999;
-      text-align: center;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    #overlay button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #0097b2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
   <div id="overlay">
-    Para melhor visualização, toque para ativar o modo tela cheia e travar a orientação.
-    <br/>
+    Por favor, gire seu celular para o modo paisagem e toque abaixo para começar.
     <button onclick="iniciar()">Ativar</button>
   </div>
 
-  <div class="main-container" style="display:none;">
-    <div class="controls">
-      <button id="reset-btn">Resetar Tudo</button>
+  <div id="rotated">
+    <div class="main-container">
+      <div class="controls">
+        <button id="reset-btn">Resetar Tudo</button>
+      </div>
+      <div class="placa-container">
+        <div class="placa" id="placa"></div>
+      </div>
     </div>
-    <div class="placa-container">
-      <div class="placa" id="placa"></div>
-    </div>
+    <audio id="somClick" src="click.wav"></audio>
+    <audio id="somResetar" src="botaoresetar.wav"></audio>
   </div>
 
-  <!-- Sons -->
-  <audio id="somClick" src="click.wav"></audio>
-  <audio id="somResetar" src="botaoresetar.wav"></audio>
-
   <script>
-    const iniciar = async () => {
+    function iniciar() {
       document.getElementById('overlay').style.display = 'none';
-      document.querySelector('.main-container').style.display = 'flex';
+      document.getElementById('rotated').style.display = 'block';
 
-      // Tela cheia
-      if (document.documentElement.requestFullscreen) {
-        await document.documentElement.requestFullscreen();
-      }
-
-      // Travar em retrato, se disponível
-      if (screen.orientation && screen.orientation.lock) {
-        try {
-          await screen.orientation.lock("portrait-primary");
-        } catch (e) {
-          console.log("Não foi possível travar orientação:", e);
-        }
-      }
-
-      iniciarApp();
-    };
-
-    function iniciarApp() {
       const placa = document.getElementById('placa');
       const resetBtn = document.getElementById('reset-btn');
       const somClick = document.getElementById('somClick');
@@ -220,6 +201,20 @@
       });
 
       carregarEstado();
+
+      // Tenta fullscreen se possível
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log('Erro ao entrar em fullscreen:', err);
+        });
+      }
+
+      // Tenta travar orientação (alguns dispositivos recusam)
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(err => {
+          console.log('Erro ao travar orientação:', err);
+        });
+      }
     }
   </script>
 </body>
