@@ -169,6 +169,12 @@
       });
 
       carregarEstado();
+
+      if (screen.orientation && screen.orientation.lock) {
+  screen.orientation.lock('portrait').catch(function(error) {
+    console.warn('Não foi possível travar a orientação:', error);
+  });
+}
       
        function checkOrientation() {
         if (window.innerHeight > window.innerWidth) {
