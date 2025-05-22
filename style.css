@@ -27,31 +27,30 @@ body {
 
 #grid-pocos {
   position: absolute;
-  top: 14vh; /* Ajuste conforme necessário */
-  left: 14vw; /* Ajuste conforme necessário */
-  width: 72vw;
-  height: 72vh;
+  top: 11vh; /* Ajuste conforme necessário */
+  left: 8.5vw; /* Ajuste conforme necessário */
   display: grid;
-  grid-template-columns: repeat(12, 112px);
-  grid-template-rows: repeat(8, 112px);
+  grid-template-rows: repeat(8, 38px); /* 8 linhas */
+  grid-template-columns: repeat(12, 38px); /* 12 colunas */
   gap: 0;
   z-index: 2;
   pointer-events: auto;
 }
 
 .poco {
-  width: 112px;
-  height: 112px;
+  width: 38px;
+  height: 38px;
   background-color: rgba(240, 240, 240, 0.3);
   color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 9px;
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
+  transform: rotate(-90deg); /* gira o texto pra esquerda */
 }
 
 .poco.marcado {
