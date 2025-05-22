@@ -1,51 +1,49 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  const grid = document.getElementById('grid-pocos');
-  const resetBtn = document.getElementById('reset-btn');
-  const audioClick = document.getElementById('audio-click');
-  const audioReset = document.getElementById('audio-reset');
+document.addEventListener("DOMContentLoaded", () => {
+  const letras = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const grid = document.getElementById("grid-pocos");
+  const resetBtn = document.getElementById("reset-btn");
+  const clickSound = document.getElementById("click-sound");
+  const resetSound = document.getElementById("reset-sound");
 
-  const inicioX = 7.9;
-  const inicioY = 27.6;
-  const espacamentoX = 7.18;
-  const espacamentoY = 3.7;
-
-  // Função para restaurar estado salvo
-  const estadoSalvo = JSON.parse(localStorage.getItem('estadoPocos')) || {};
+  // Recuperar do localStorage
+  const estadosSalvos = JSON.parse(localStorage.getItem("poçosMarcados")) || {};
 
   for (let linha = 1; linha <= 12; linha++) {
-    for (let coluna = 0; coluna < 8; coluna++) {
-      const pos = `${letras[coluna]}${linha}`;
-      const poco = document.createElement('div');
-      poco.className = 'poco';
-      poco.dataset.posicao = pos;
+    for (let col = 0; col < 8; col++) {
+      const id = `${letras[col]}${linha}`;
+      const div = document.createElement("div");
+      div.className = "poco";
+      div.textContent = id;
+      div.dataset.id = id;
 
-      // Posição absoluta baseada na imagem (ajustada)
-      poco.style.left = `${inicioX + coluna * espacamentoX}%`;
-      poco.style.top = `${inicioY + (linha - 1) * espacamentoY}%`;
-
-      // Estado salvo
-      if (estadoSalvo[pos]) {
-        poco.classList.add('marcado');
+      if (estadosSalvos[id]) {
+        div.classList.add("marcado");
+        div.style.color = "white";
       }
 
-      poco.addEventListener('click', function () {
-        this.classList.toggle('marcado');
-        audioClick.currentTime = 0;
-        audioClick.play();
+      div.addEventListener("click", () => {
+        div.classList.toggle("marcado");
+        clickSound.currentTime = 0;
+        clickSound.play();
 
-        estadoSalvo[pos] = this.classList.contains('marcado');
-        localStorage.setItem('estadoPocos', JSON.stringify(estadoSalvo));
+        const marcado = div.classList.contains("marcado");
+        div.style.color = marcado ? "white" : "transparent";
+        estadosSalvos[id] = marcado;
+        localStorage.setItem("poçosMarcados", JSON.stringify(estadosSalvos));
       });
 
-      grid.appendChild(poco);
+      grid.appendChild(div);
     }
   }
 
-  resetBtn.addEventListener('click', function () {
-    document.querySelectorAll('.poco').forEach(p => p.classList.remove('marcado'));
-    localStorage.removeItem('estadoPocos');
-    audioReset.currentTime = 0;
-    audioReset.play();
+  resetBtn.addEventListener("click", () => {
+    document.querySelectorAll(".poco").forEach((p) => {
+      p.classList.remove("marcado");
+      p.style.color = "transparent";
+    });
+
+    localStorage.removeItem("poçosMarcados");
+    resetSound.currentTime = 0;
+    resetSound.play();
   });
 });
