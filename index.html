@@ -179,13 +179,7 @@
         console.warn('Erro ao tentar fullscreen:', err);
       });
     }
-  // Ativa fullscreen ao primeiro toque/click do usuário
-  document.addEventListener('click', function handleClick() {
-    ativarFullscreenRetrato();
-    document.removeEventListener('click', handleClick);
-  });
-});
-      function checkOrientation() {
+       function checkOrientation() {
         if (window.innerHeight > window.innerWidth) {
           alert("Por favor, mantenha seu dispositivo no modo Retrato!");
         }
