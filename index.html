@@ -175,13 +175,6 @@
     console.warn('Não foi possível travar a orientação:', error);
   });
 }
-      
-  document.addEventListener('click', function handleClick() {
-    ativarFullscreenRetrato();
-    document.removeEventListener('click', handleClick);
-  });
-});
-    
        function checkOrientation() {
         if (window.innerHeight > window.innerWidth) {
           alert("Por favor, mantenha seu dispositivo no modo Retrato!");
