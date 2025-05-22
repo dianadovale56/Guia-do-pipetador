@@ -1,71 +1,80 @@
-body {
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background-color: black;
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .container {
   position: relative;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .placa {
-  width: 96vw;
-  height: 96vh;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   position: absolute;
-  top: 2%;
-  left: 2%;
+  top: 0;
+  left: 0;
   z-index: 0;
 }
 
-#poços-container {
+.poços-container {
   position: absolute;
-  top: 20%;
-  left: 53%;
-  transform: translate(-50%, 0);
-  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + 114px), calc(-50% + 20px)) rotate(-90deg);
   display: grid;
   grid-template-columns: repeat(12, 38px);
   grid-template-rows: repeat(8, 38px);
   gap: 2px;
+  z-index: 1;
 }
 
-.poço {
+/* Estilo dos poços */
+.poco {
   width: 38px;
   height: 38px;
   background-color: transparent;
   border: 2px solid #0097b2;
-  border-radius: 6px;
+  border-radius: 8px;
   color: white;
   font-size: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(90deg);
   user-select: none;
   cursor: pointer;
+  transform: rotate(90deg); /* Corrige o texto */
 }
 
-.poço.marcado {
+.poco.ativo {
   background-color: #0097b2;
   color: white;
 }
 
-#resetar {
+/* Botão de reset */
+#resetar-btn {
   position: absolute;
+  bottom: 7%;
   left: 50%;
-  bottom: 4.2%;
   transform: translateX(-50%);
-  padding: 10px 20px;
   background-color: #0097b2;
   color: white;
   border: none;
-  border-radius: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
   font-size: 16px;
+  z-index: 2;
   cursor: pointer;
-  z-index: 3;
-  font-weight: bold;
 }
