@@ -12,13 +12,12 @@ body {
 }
 
 .placa {
-  width: 100%;
-  height: 100%;
+  width: 98vw; /* ligeiramente menor que 100% */
+  height: 98vh;
   object-fit: contain;
-  background-color: black;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 1%;
+  left: 1%;
   z-index: 0;
 }
 
@@ -40,15 +39,17 @@ body {
   z-index: 2;
 }
 
+/* Cor quando marcado */
 .poço.marcado {
   background-color: #0097b2;
   color: white;
 }
 
+/* Botão RESETAR no ponto exato da imagem */
 #resetar {
   position: absolute;
   left: 50%;
-  bottom: 6%;
+  bottom: 4.3%;
   transform: translateX(-50%);
   padding: 10px 20px;
   background-color: #0097b2;
