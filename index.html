@@ -169,7 +169,30 @@
       });
 
       carregarEstado();
+      // Requisitar modo fullscreen e travar orientação
+  function ativarFullscreenRetrato() {
+    const elem = document.documentElement;
 
+    // Solicita fullscreen
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen().then(() => {
+        // Tenta travar em modo retrato
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('portrait').catch(function(error) {
+            console.warn('Não foi possível travar a orientação:', error);
+          });
+        }
+      }).catch((err) => {
+        console.warn('Erro ao tentar fullscreen:', err);
+      });
+    }
+  }
+  // Ativa fullscreen ao primeiro toque/click do usuário
+  document.addEventListener('click', function handleClick() {
+    ativarFullscreenRetrato();
+    document.removeEventListener('click', handleClick);
+  });
+});
       function checkOrientation() {
         if (window.innerHeight > window.innerWidth) {
           alert("Por favor, mantenha seu dispositivo no modo Retrato!");
