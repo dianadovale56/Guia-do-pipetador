@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Recuperar do localStorage
   const estadosSalvos = JSON.parse(localStorage.getItem("poçosMarcados")) || {};
 
-  for (let linha = 1; linha <= 12; linha++) {
-    for (let col = 0; col < 8; col++) {
-      const id = `${letras[col]}${linha}`;
+  letras.forEach((letra) => {
+    for (let i = 1; i <= 12; i++) {
+      const id = `${letra}${i}`;
       const div = document.createElement("div");
       div.className = "poco";
       div.textContent = id;
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       grid.appendChild(div);
     }
-  }
+  });
 
   resetBtn.addEventListener("click", () => {
     document.querySelectorAll(".poco").forEach((p) => {
