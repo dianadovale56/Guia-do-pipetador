@@ -1,50 +1,51 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    const grid = document.getElementById('grid-pocos');
-    const resetBtn = document.getElementById('reset-btn');
-    const clickSound = document.getElementById('som-click');
-    const resetSound = document.getElementById('som-reset');
+  const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  const grid = document.getElementById('grid-pocos');
+  const resetBtn = document.getElementById('reset-btn');
+  const audioClick = document.getElementById('audio-click');
+  const audioReset = document.getElementById('audio-reset');
 
-    const inicioX = 8.5;
-    const inicioY = 28;
-    const espacamentoX = 7.2;
-    const espacamentoY = 3.8;
+  const inicioX = 7.9;
+  const inicioY = 27.6;
+  const espacamentoX = 7.18;
+  const espacamentoY = 3.7;
 
-    const marcados = JSON.parse(localStorage.getItem('poçosMarcados')) || {};
+  // Função para restaurar estado salvo
+  const estadoSalvo = JSON.parse(localStorage.getItem('estadoPocos')) || {};
 
-    for (let linha = 1; linha <= 12; linha++) {
-        for (let coluna = 0; coluna < 8; coluna++) {
-            const posicao = `${letras[coluna]}${linha}`;
-            const poco = document.createElement('div');
-            poco.className = 'poco';
-            poco.dataset.posicao = posicao;
+  for (let linha = 1; linha <= 12; linha++) {
+    for (let coluna = 0; coluna < 8; coluna++) {
+      const pos = `${letras[coluna]}${linha}`;
+      const poco = document.createElement('div');
+      poco.className = 'poco';
+      poco.dataset.posicao = pos;
 
-            poco.style.left = `${inicioX + coluna * espacamentoX}%`;
-            poco.style.top = `${inicioY + (linha - 1) * espacamentoY}%`;
-            poco.textContent = posicao;
+      // Posição absoluta baseada na imagem (ajustada)
+      poco.style.left = `${inicioX + coluna * espacamentoX}%`;
+      poco.style.top = `${inicioY + (linha - 1) * espacamentoY}%`;
 
-            if (marcados[posicao]) {
-                poco.classList.add('marcado');
-            }
+      // Estado salvo
+      if (estadoSalvo[pos]) {
+        poco.classList.add('marcado');
+      }
 
-            poco.addEventListener('click', function () {
-                this.classList.toggle('marcado');
-                marcados[posicao] = this.classList.contains('marcado');
-                localStorage.setItem('poçosMarcados', JSON.stringify(marcados));
-                clickSound.currentTime = 0;
-                clickSound.play();
-            });
+      poco.addEventListener('click', function () {
+        this.classList.toggle('marcado');
+        audioClick.currentTime = 0;
+        audioClick.play();
 
-            grid.appendChild(poco);
-        }
+        estadoSalvo[pos] = this.classList.contains('marcado');
+        localStorage.setItem('estadoPocos', JSON.stringify(estadoSalvo));
+      });
+
+      grid.appendChild(poco);
     }
+  }
 
-    resetBtn.addEventListener('click', function () {
-        document.querySelectorAll('.poco').forEach(p => {
-            p.classList.remove('marcado');
-        });
-        localStorage.removeItem('poçosMarcados');
-        resetSound.currentTime = 0;
-        resetSound.play();
-    });
+  resetBtn.addEventListener('click', function () {
+    document.querySelectorAll('.poco').forEach(p => p.classList.remove('marcado'));
+    localStorage.removeItem('estadoPocos');
+    audioReset.currentTime = 0;
+    audioReset.play();
+  });
 });
