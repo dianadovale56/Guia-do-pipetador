@@ -459,7 +459,7 @@
             text-align: center;
         }
         
-        .checklist-section {
+        .checklist-group {
             margin-bottom: 30px;
         }
         
@@ -813,6 +813,16 @@
     
     <!-- App Section (Placa de Poços) -->
     <section id="app-section" class="app-section">
+        
+        <button id="fullscreen-btn" class="back-btn" style="left: 80px;" title="Tela cheia">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+                <path d="M16 3h3a2 2 0 0 1 2 2v3"/>
+                <path d="M8 21H5a2 2 0 0 1-2-2v-3"/>
+                <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+            </svg>
+        </button>
+
         <button id="back-btn-app" class="back-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -1271,7 +1281,7 @@
         <div class="checklist-container">
             <h1 class="checklist-title bellota">Checklist de Segurança e Precisão</h1>
             
-            <div class="checklist-section">
+            <div class="checklist-group">
                 <h2 class="checklist-section-title">1. Antes de pipetar:</h2>
                 <div class="checklist-item">
                     <input type="checkbox" id="check1" class="checklist-checkbox">
@@ -1283,7 +1293,7 @@
                 </div>
             </div>
             
-            <div class="checklist-section">
+            <div class="checklist-group">
                 <h2 class="checklist-section-title">2. Durante a pipetagem:</h2>
                 <div class="checklist-item">
                     <input type="checkbox" id="check3" class="checklist-checkbox">
@@ -1295,7 +1305,7 @@
                 </div>
             </div>
             
-            <div class="checklist-section">
+            <div class="checklist-group">
                 <h2 class="checklist-section-title">3. Após o uso:</h2>
                 <div class="checklist-item">
                     <input type="checkbox" id="check5" class="checklist-checkbox">
@@ -1420,5 +1430,81 @@
             });
         });
     </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const appSection = document.getElementById('app-section');
+
+    function isLandscape() {
+        return window.matchMedia("(orientation: landscape)").matches;
+    }
+
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            appSection.requestFullscreen().catch(err => {
+                alert(`Erro ao entrar em tela cheia: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    fullscreenBtn.addEventListener('click', function () {
+        toggleFullscreen();
+    });
+
+    // Mostrar ou esconder o botão dependendo da orientação e da seção visível
+    function handleOrientationChange() {
+        if (appSection.style.display === 'block' && isLandscape()) {
+            fullscreenBtn.style.display = 'flex';
+        } else {
+            fullscreenBtn.style.display = 'none';
+        }
+    }
+
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+
+    // Também verificar ao mostrar a app-section
+    const plateBtn = document.getElementById('plate-btn');
+    const backBtnApp = document.getElementById('back-btn-app');
+
+    plateBtn.addEventListener('click', handleOrientationChange);
+    backBtnApp.addEventListener('click', () => {
+        fullscreenBtn.style.display = 'none';
+    });
+
+    handleOrientationChange(); // Chamada inicial
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Áudios
+    const clickSound = new Audio('./audio/click.wav');
+    const resetSound = new Audio('./audio/botaoresetar.wav');
+
+    // Sons para os poços
+    const wells = document.querySelectorAll('.well');
+    wells.forEach(well => {
+        well.addEventListener('click', () => {
+            clickSound.currentTime = 0;
+            clickSound.play();
+        });
+    });
+
+    // Som para o botão resetar
+    const resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            resetSound.currentTime = 0;
+            resetSound.play();
+        });
+    }
+});
+</script>
 </body>
+
+
 </html>
