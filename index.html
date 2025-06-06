@@ -593,7 +593,130 @@
         .glossary-table tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-    </style>
+    
+/* MODO RETRATO (vertical no celular) */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .app-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .counter-container {
+        width: 90%;
+        margin-right: 0;
+    }
+
+    .plate-container {
+        width: 100%;
+        padding: 10px;
+        overflow-x: auto;
+    }
+
+    .well {
+        width: 38px;
+        height: 38px;
+    }
+
+    .column-header {
+        width: 38px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .row-header {
+        width: 28px;
+        height: 38px;
+        font-size: 12px;
+    }
+
+    .author-name {
+        font-size: 12px;
+        right: -20px;
+    }
+}
+
+/* MODO PAISAGEM (horizontal no celular) */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    body {
+        overflow-x: auto;
+    }
+
+    .app-section {
+        overflow-x: auto;
+        width: 100vw;
+        padding: 10px 0;
+    }
+
+    .app-container {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: flex-start;
+        width: fit-content;
+        max-width: 95vw;
+        transform: scale(0.85);
+        transform-origin: top center;
+        gap: 10px;
+        margin: 0 auto;
+    }
+
+    .counter-container {
+        width: 160px;
+        flex-shrink: 0;
+        margin-right: 0;
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .plate-container {
+        flex-shrink: 1;
+        overflow-x: visible;
+        padding: 15px;
+        transform: scale(0.9);
+        transform-origin: left center;
+        height: 660px;
+	width: 750px; /* Altere este valor */
+	min-width: 750px; /* Deve ser igual ao width */
+    }
+
+    .well {
+        width: 50px;
+        height: 50px;
+        font-size: 12px;
+    }
+
+    .column-header {
+        width: 35px;
+        height: 25px;
+        font-size: 11px;
+    }
+
+    .row-header {
+        width: 25px;
+        height: 35px;
+        font-size: 11px;
+    }
+
+    .author-name {
+        font-size: 12px;
+        right: -20px;
+    }
+
+    /* Ajustes para os elementos dentro do contador */
+    .legend-section {
+        margin-top: auto;
+        margin-bottom: 15px;
+    }
+
+    .guide-section {
+        margin-top: auto;
+    }
+}
+
+</style>
 </head>
 <body>
     <!-- Cover Section -->
