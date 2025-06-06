@@ -657,15 +657,16 @@
         max-width: 95vw;
         transform: scale(0.85);
         transform-origin: top center;
-        gap: 10px;
+        gap: 0px;
         margin: 0 auto;
     }
 
     .counter-container {
         width: 160px;
-        flex-shrink: 0;
-        margin-right: 0;
         height: 600px;
+	position: relative;
+	margin-top: 30px;
+	margin-left: 70px; 
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -678,41 +679,59 @@
         transform: scale(0.9);
         transform-origin: left center;
         height: 660px;
-	width: 750px; /* Altere este valor */
-	min-width: 750px; /* Deve ser igual ao width */
+	width: 850px;
+	min-width: 850px;
     }
 
     .well {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         font-size: 12px;
     }
 
     .column-header {
-        width: 35px;
-        height: 25px;
-        font-size: 11px;
+        width: 60px;
+        height: 35px;
+        font-size: 14px;
     }
 
     .row-header {
-        width: 25px;
-        height: 35px;
-        font-size: 11px;
+        width: 50px;
+        height: 60px;
+        font-size: 12px;
+	position: relative;
+	margin-left: -12px;
     }
 
     .author-name {
-        font-size: 12px;
+        font-size: 20px;
         right: -20px;
     }
 
     /* Ajustes para os elementos dentro do contador */
+   .counter-value {
+    	margin-top: 20px; /* Espaço acima */
+    	margin-bottom: 5px; /* Espaço abaixo */
+    }	
+
+   .reset-btn {
+       margin-top: 15px;
+       margin-bottom: 20px;
+    }
+
+   .counter-label {
+       margin-top: 5px;
+       margin-bottom: 5px;
+    }
+
     .legend-section {
-        margin-top: auto;
-        margin-bottom: 15px;
+        margin-top: -5px;
+        margin-bottom: -25px;
     }
 
     .guide-section {
-        margin-top: auto;
+        margin-top: 10;
+    	padding-bottom: 5px;
     }
 }
 
