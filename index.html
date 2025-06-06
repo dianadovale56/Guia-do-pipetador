@@ -1,199 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia do Pipetador</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bellota:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Better+Saturday&display=swap" rel="stylesheet">
-    <style>
-        /* [Todos os estilos anteriores permanecem iguais...] */
-        
-        /* CORREÇÕES PARA A CHECKLIST */
-        .checklist-section {
-            display: none;
-            padding: 2rem 0;
-            background-color: #f9fafb;
-            min-height: 100vh;
-        }
-        
-        .checklist-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .checklist-title {
-            font-size: 2.5rem;
-            color: #0097b2;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .checklist-section-group {
-            margin-bottom: 30px;
-        }
-        
-        .checklist-section-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #0097b2;
-            margin-bottom: 15px;
-            padding-left: 10px;
-            border-left: 4px solid #0097b2;
-        }
-        
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 12px 15px;
-            background-color: #f8fafc;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .checklist-item:hover {
-            background-color: #f0f7ff;
-        }
-        
-        .checklist-checkbox {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border: 2px solid #0097b2;
-            border-radius: 4px;
-            margin-right: 15px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-        
-        .checklist-checkbox:checked {
-            background-color: #0097b2;
-            border-color: #0097b2;
-        }
-        
-        .checklist-checkbox:checked::after {
-            content: '✓';
-            position: absolute;
-            color: white;
-            font-size: 16px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .checklist-label {
-            font-size: 1rem;
-            color: #333;
-            flex-grow: 1;
-        }
-        
-        /* Responsividade para Checklist */
-        @media screen and (max-width: 768px) {
-            .checklist-container {
-                padding: 20px;
-            }
-            
-            .checklist-title {
-                font-size: 2rem;
-                margin-bottom: 20px;
-            }
-            
-            .checklist-item {
-                padding: 10px 12px;
-            }
-            
-            .checklist-checkbox {
-                width: 22px;
-                height: 22px;
-                margin-right: 12px;
-            }
-        }
+// Adicione este código ao seu JavaScript existente
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (código existente)
+    
+    // Funcionalidade da Checklist
+    const checklistCheckboxes = document.querySelectorAll('.checklist-checkbox');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const resetButton = document.getElementById('resetButton');
 
-        /* [Todos os outros estilos permanecem iguais...] */
-    </style>
-</head>
-<body>
-    <!-- [Todas as outras seções permanecem iguais...] -->
-
-    <!-- Checklist Section - Versão Corrigida -->
-    <section id="checklist-section" class="checklist-section">
-        <button id="back-btn-checklist" class="back-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-        </button>
+    function updateChecklistProgress() {
+        const total = checklistCheckboxes.length;
+        const checked = Array.from(checklistCheckboxes).filter(cb => cb.checked).length;
+        const percent = Math.round((checked / total) * 100);
         
-        <div class="checklist-container">
-            <h1 class="checklist-title bellota">Checklist de Segurança e Precisão</h1>
-            
-            <div class="checklist-section-group">
-                <h2 class="checklist-section-title">1. Antes de pipetar:</h2>
-                <div class="checklist-item">
-                    <input type="checkbox" id="check1" class="checklist-checkbox">
-                    <label for="check1" class="checklist-label">Verifique a calibração da pipeta</label>
-                </div>
-                <div class="checklist-item">
-                    <input type="checkbox" id="check2" class="checklist-checkbox">
-                    <label for="check2" class="checklist-label">Use EPI (Jaleco, luvas, óculos...)</label>
-                </div>
-            </div>
-            
-            <div class="checklist-section-group">
-                <h2 class="checklist-section-title">2. Durante a pipetagem:</h2>
-                <div class="checklist-item">
-                    <input type="checkbox" id="check3" class="checklist-checkbox">
-                    <label for="check3" class="checklist-label">Evite inclinar a pipeta</label>
-                </div>
-                <div class="checklist-item">
-                    <input type="checkbox" id="check4" class="checklist-checkbox">
-                    <label for="check4" class="checklist-label">Observe se o volume de líquido está correto</label>
-                </div>
-            </div>
-            
-            <div class="checklist-section-group">
-                <h2 class="checklist-section-title">3. Após o uso:</h2>
-                <div class="checklist-item">
-                    <input type="checkbox" id="check5" class="checklist-checkbox">
-                    <label for="check5" class="checklist-label">Limpe a pipeta com álcool 70%</label>
-                </div>
-                <div class="checklist-item">
-                    <input type="checkbox" id="check6" class="checklist-checkbox">
-                    <label for="check6" class="checklist-label">Armazene na posição vertical</label>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // [O resto do JavaScript permanece igual...]
-            
-            // Adicione esta função para melhorar a checklist
-            const checkboxes = document.querySelectorAll('.checklist-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const label = this.nextElementSibling;
-                    if (this.checked) {
-                        label.style.textDecoration = 'none';
-                        label.style.fontWeight = 'bold';
-                        label.style.color = '#0097b2';
-                    } else {
-                        label.style.textDecoration = 'none';
-                        label.style.fontWeight = 'normal';
-                        label.style.color = '#333';
-                    }
-                });
-            });
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = `${percent}% completo`;
+        
+        // Salva no localStorage
+        checklistCheckboxes.forEach((checkbox, index) => {
+            localStorage.setItem(`checklist_${index}`, checkbox.checked);
         });
-    </script>
-</body>
-</html>
+    }
+
+    // Carrega estado salvo
+    checklistCheckboxes.forEach((checkbox, index) => {
+        const savedState = localStorage.getItem(`checklist_${index}`);
+        if (savedState === 'true') {
+            checkbox.checked = true;
+        }
+        
+        checkbox.addEventListener('change', updateChecklistProgress);
+    });
+
+    // Botão reset
+    resetButton.addEventListener('click', function() {
+        checklistCheckboxes.forEach((checkbox, index) => {
+            checkbox.checked = false;
+            localStorage.removeItem(`checklist_${index}`);
+        });
+        updateChecklistProgress();
+    });
+
+    // Atualiza inicialmente
+    updateChecklistProgress();
+});
