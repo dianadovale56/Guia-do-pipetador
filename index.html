@@ -1,46 +1,1424 @@
-// Adicione este código ao seu JavaScript existente
-document.addEventListener('DOMContentLoaded', function() {
-    // ... (código existente)
-    
-    // Funcionalidade da Checklist
-    const checklistCheckboxes = document.querySelectorAll('.checklist-checkbox');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const resetButton = document.getElementById('resetButton');
-
-    function updateChecklistProgress() {
-        const total = checklistCheckboxes.length;
-        const checked = Array.from(checklistCheckboxes).filter(cb => cb.checked).length;
-        const percent = Math.round((checked / total) * 100);
-        
-        progressBar.style.width = `${percent}%`;
-        progressText.textContent = `${percent}% completo`;
-        
-        // Salva no localStorage
-        checklistCheckboxes.forEach((checkbox, index) => {
-            localStorage.setItem(`checklist_${index}`, checkbox.checked);
-        });
-    }
-
-    // Carrega estado salvo
-    checklistCheckboxes.forEach((checkbox, index) => {
-        const savedState = localStorage.getItem(`checklist_${index}`);
-        if (savedState === 'true') {
-            checkbox.checked = true;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia do Pipetador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bellota:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Better+Saturday&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
         
-        checkbox.addEventListener('change', updateChecklistProgress);
-    });
+        .bellota {
+            font-family: 'Bellota', cursive;
+        }
+        
+        .arimo {
+            font-family: 'Arimo', sans-serif;
+        }
+        
+        .better-saturday {
+            font-family: 'Better Saturday', cursive;
+        }
+        
+        .cover-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0097b2, #005f73);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: 0;
+        }
+        
+        .cover-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .cover-title {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .cover-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .menu-btn {
+            background-color: white;
+            color: #0097b2;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            border: none;
+            margin: 10px;
+            min-width: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+        
+        .menu-btn svg {
+            margin-right: 10px;
+        }
+        
+        .lab-icon {
+            position: absolute;
+            opacity: 0.1;
+        }
+        
+        .icon-1 {
+            top: 10%;
+            left: 10%;
+            font-size: 4rem;
+            transform: rotate(-15deg);
+        }
+        
+        .icon-2 {
+            bottom: 15%;
+            right: 10%;
+            font-size: 5rem;
+            transform: rotate(10deg);
+        }
+        
+        .icon-3 {
+            top: 20%;
+            right: 20%;
+            font-size: 3rem;
+        }
+        
+        .icon-4 {
+            bottom: 20%;
+            left: 15%;
+            font-size: 4rem;
+            transform: rotate(-10deg);
+        }
+        
+        /* App styles */
+        .app-section, .manual-section, .checklist-section {
+            display: none;
+            padding: 2rem 0;
+        }
+        
+        .well {
+            width: 65px;
+            height: 65px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .well-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(70,70,70,0.8), 
+                         -1px -1px 1px rgba(70,70,70,0.8), 
+                         1px -1px 1px rgba(70,70,70,0.8), 
+                         -1px 1px 1px rgba(70,70,70,0.8);
+        }
+        
+        .column-header {
+            width: 65px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4b5563;
+        }
+        
+        .row-header {
+            width: 40px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4b5563;
+        }
+        
+        .reset-btn {
+            padding: 12px 24px;
+            background-color: #0097b2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .reset-btn:hover {
+            background-color: #007d96;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .plate-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px;
+            position: relative;
+            height: fit-content;
+        }
+        
+        .author-name {
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            transform-origin: right center;
+            white-space: nowrap;
+            color: #000000;
+            font-size: 18px;
+            font-family: 'Better Saturday', cursive;
+            opacity: 0.9;
+        }
+        
+        .counter-container {
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-right: 15px;
+            width: 180px;
+            height: fit-content;
+        }
+        
+        .counter-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #0097b2;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .counter-label {
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 25px;
+        }
+        
+        .counter-total {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #0097b2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background-color: #007d96;
+            transform: scale(1.1);
+        }
+        
+        .pipette-animation {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 200px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateX(-50%) translateY(0px);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+            100% {
+                transform: translateX(-50%) translateY(0px);
+            }
+        }
+        
+        .legend-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 15px 0;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-left: 12px;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .empty-well {
+            background-color: #f0f0f0;
+            border: 2px solid #d0d0d0;
+        }
+        
+        .filled-well {
+            background-color: #0097b2;
+        }
+        
+        .legend-label {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .guide-section {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .guide-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0097b2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .guide-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .app-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        /* Manual styles */
+        .manual-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .manual-title {
+            font-size: 2.5rem;
+            color: #0097b2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .manual-section-title {
+            font-size: 1.5rem;
+            color: #0097b2;
+            margin: 30px 0 15px;
+            border-bottom: 2px solid #0097b2;
+            padding-bottom: 5px;
+        }
+        
+        .manual-content {
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .manual-tip {
+            background-color: #e6f7fa;
+            border-left: 4px solid #0097b2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .manual-tip-title {
+            font-weight: bold;
+            color: #0097b2;
+            margin-bottom: 5px;
+        }
+        
+        .manual-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .manual-subsection-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0097b2;
+            margin: 20px 0 10px;
+        }
+        
+        .manual-list {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .manual-list li {
+            margin-bottom: 8px;
+        }
+        
+        .manual-sublist {
+            list-style-type: circle;
+            padding-left: 20px;
+            margin: 5px 0;
+        }
+        
+        /* Checklist styles */
+        .checklist-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .checklist-title {
+            font-size: 2.5rem;
+            color: #0097b2;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .checklist-section {
+            margin-bottom: 30px;
+        }
+        
+        .checklist-section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0097b2;
+            margin-bottom: 15px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .checklist-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #0097b2;
+            border-radius: 4px;
+            margin-right: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .checklist-checkbox:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        
+        .checklist-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .checklist-label {
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+        
+        /* Floating elements */
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .floating-1 {
+            top: 15%;
+            left: 5%;
+            animation: float-1 15s ease-in-out infinite;
+        }
+        
+        .floating-2 {
+            top: 25%;
+            right: 10%;
+            animation: float-2 18s ease-in-out infinite;
+        }
+        
+        .floating-3 {
+            bottom: 20%;
+            left: 15%;
+            animation: float-3 20s ease-in-out infinite;
+        }
+        
+        @keyframes float-1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, -30px) rotate(5deg); }
+        }
+        
+        @keyframes float-2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-20px, -20px) rotate(-5deg); }
+        }
+        
+        @keyframes float-3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(30px, 20px) rotate(8deg); }
+        }
+        
+        /* Glossary styles */
+        .glossary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .glossary-table th, .glossary-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .glossary-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: left;
+        }
+        
+        .glossary-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    
+/* MODO RETRATO (vertical no celular) */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .app-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
 
-    // Botão reset
-    resetButton.addEventListener('click', function() {
-        checklistCheckboxes.forEach((checkbox, index) => {
-            checkbox.checked = false;
-            localStorage.removeItem(`checklist_${index}`);
+    .counter-container {
+        width: 90%;
+        margin-right: 0;
+    }
+
+    .plate-container {
+        width: 100%;
+        padding: 10px;
+        overflow-x: auto;
+    }
+
+    .well {
+        width: 38px;
+        height: 38px;
+    }
+
+    .column-header {
+        width: 38px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .row-header {
+        width: 28px;
+        height: 38px;
+        font-size: 12px;
+    }
+
+    .author-name {
+        font-size: 12px;
+        right: -20px;
+    }
+}
+
+/* MODO PAISAGEM (horizontal no celular) */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+    body {
+        overflow-x: auto;
+    }
+
+    .app-section {
+        overflow-x: auto;
+        width: 100vw;
+        padding: 10px 0;
+    }
+
+    .app-container {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: flex-start;
+        width: fit-content;
+        max-width: 95vw;
+        transform: scale(0.85);
+        transform-origin: top center;
+        gap: 0px;
+        margin: 0 auto;
+    }
+
+    .counter-container {
+        width: 160px;
+        height: 600px;
+	position: relative;
+	margin-top: 30px;
+	margin-left: 70px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .plate-container {
+        flex-shrink: 1;
+        overflow-x: visible;
+        padding: 15px;
+        transform: scale(0.9);
+        transform-origin: left center;
+        height: 660px;
+	width: 850px;
+	min-width: 850px;
+    }
+
+    .well {
+        width: 60px;
+        height: 60px;
+        font-size: 12px;
+    }
+
+    .column-header {
+        width: 60px;
+        height: 35px;
+        font-size: 14px;
+    }
+
+    .row-header {
+        width: 50px;
+        height: 60px;
+        font-size: 12px;
+	position: relative;
+	margin-left: -12px;
+    }
+
+    .author-name {
+        font-size: 20px;
+        right: -20px;
+    }
+
+    /* Ajustes para os elementos dentro do contador */
+   .counter-value {
+    	margin-top: 20px; /* Espaço acima */
+    	margin-bottom: 5px; /* Espaço abaixo */
+    }	
+
+   .reset-btn {
+       margin-top: 15px;
+       margin-bottom: 20px;
+    }
+
+   .counter-label {
+       margin-top: 5px;
+       margin-bottom: 5px;
+    }
+
+    .legend-section {
+        margin-top: -5px;
+        margin-bottom: -25px;
+    }
+
+    .guide-section {
+        margin-top: 10;
+    	padding-bottom: 5px;
+    }
+}
+
+</style>
+</head>
+<body>
+    <!-- Cover Section -->
+    <section id="cover-section" class="cover-section">
+        <!-- Floating elements -->
+        <div class="floating-element floating-1">
+            <svg width="150" height="150" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="40" y="10" width="20" height="60" rx="5" fill="white" />
+                <rect x="45" y="70" width="10" height="20" rx="2" fill="white" />
+                <circle cx="50" cy="95" r="5" fill="white" />
+            </svg>
+        </div>
+        <div class="floating-element floating-2">
+            <svg width="180" height="180" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="10" width="80" height="80" rx="5" fill="white" />
+                <circle cx="25" cy="25" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="25" cy="50" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="25" cy="75" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="50" cy="25" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="50" cy="50" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="50" cy="75" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="75" cy="25" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="75" cy="50" r="10" fill="#0097b2" fill-opacity="0.2" />
+                <circle cx="75" cy="75" r="10" fill="#0097b2" fill-opacity="0.2" />
+            </svg>
+        </div>
+        <div class="floating-element floating-3">
+            <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 10C30 10 10 30 10 50C10 70 30 90 50 90C70 90 90 70 90 50C90 30 70 10 50 10ZM50 80C35 80 20 65 20 50C20 35 35 20 50 20C65 20 80 35 80 50C80 65 65 80 50 80Z" fill="white" />
+                <circle cx="50" cy="50" r="15" fill="white" />
+            </svg>
+        </div>
+        
+        <div class="cover-content">
+            <h1 class="cover-title bellota fade-in">Guia do Pipetador</h1>
+            <p class="cover-subtitle fade-in delay-1">Ferramenta para análise e técnicas de pipetagem em laboratório</p>
+            
+            <div class="flex flex-col items-center mt-8">
+                <button id="plate-btn" class="menu-btn bellota fade-in delay-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <circle cx="15.5" cy="8.5" r="1.5"></circle>
+                        <circle cx="8.5" cy="15.5" r="1.5"></circle>
+                        <circle cx="15.5" cy="15.5" r="1.5"></circle>
+                    </svg>
+                    Placa de Poços
+                </button>
+                <button id="manual-btn" class="menu-btn bellota fade-in delay-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    Manual de Pipetagem
+                </button>
+                <button id="checklist-btn" class="menu-btn bellota fade-in delay-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    Checklist
+                </button>
+            </div>
+        </div>
+        
+        <div class="pipette-animation">
+            <svg viewBox="0 0 24 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="0" width="8" height="60" rx="2" fill="white" />
+                <rect x="8" y="60" width="8" height="20" rx="0" fill="rgba(255,255,255,0.7)" />
+                <rect x="10" y="80" width="4" height="10" rx="2" fill="rgba(255,255,255,0.5)" />
+                <circle cx="12" cy="95" r="5" fill="rgba(255,255,255,0.3)" />
+            </svg>
+        </div>
+    </section>
+    
+    <!-- App Section (Placa de Poços) -->
+    <section id="app-section" class="app-section">
+        <button id="back-btn-app" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        
+        <div class="app-container">
+            <!-- Counter on the left -->
+            <div class="counter-container">
+                <!-- Counter section -->
+                <div class="counter-value">
+                    <span id="selected-counter">0</span>
+                </div>
+                <div class="counter-label">Poços Selecionados</div>
+                <div class="counter-total">de 96 poços totais</div>
+                
+                <!-- Reset button with more spacing -->
+                <button id="reset-btn" class="reset-btn">Resetar</button>
+                
+                <!-- Legend with more spacing -->
+                <div class="legend-section">
+                    <div class="legend-item">
+                        <span class="legend-label">Vazio</span>
+                        <div class="legend-color empty-well"></div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Preenchido</span>
+                        <div class="legend-color filled-well"></div>
+                    </div>
+                </div>
+                
+                <!-- Guide title and subtitle with more spacing -->
+                <div class="guide-section">
+                    <div class="guide-title bellota">Guia do Pipetador</div>
+                    <div class="guide-subtitle arimo">Clique nos poços para marcá-los</div>
+                </div>
+            </div>
+            
+            <!-- Plate container -->
+            <div class="plate-container">
+                <!-- Author name -->
+                <div class="author-name">Por Msc. Diana do Vale Leão</div>
+                
+                <div class="flex mb-2">
+                    <div class="w-10"></div>
+                    <!-- Column Headers -->
+                    <div class="flex gap-2">
+                        <div class="column-header">1</div>
+                        <div class="column-header">2</div>
+                        <div class="column-header">3</div>
+                        <div class="column-header">4</div>
+                        <div class="column-header">5</div>
+                        <div class="column-header">6</div>
+                        <div class="column-header">7</div>
+                        <div class="column-header">8</div>
+                        <div class="column-header">9</div>
+                        <div class="column-header">10</div>
+                        <div class="column-header">11</div>
+                        <div class="column-header">12</div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row A -->
+                    <div class="row-header">A</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="A1" class="well bg-[#f0f0f0]"><span class="well-label">A1</span></div>
+                        <div id="A2" class="well bg-[#f0f0f0]"><span class="well-label">A2</span></div>
+                        <div id="A3" class="well bg-[#f0f0f0]"><span class="well-label">A3</span></div>
+                        <div id="A4" class="well bg-[#f0f0f0]"><span class="well-label">A4</span></div>
+                        <div id="A5" class="well bg-[#f0f0f0]"><span class="well-label">A5</span></div>
+                        <div id="A6" class="well bg-[#f0f0f0]"><span class="well-label">A6</span></div>
+                        <div id="A7" class="well bg-[#f0f0f0]"><span class="well-label">A7</span></div>
+                        <div id="A8" class="well bg-[#f0f0f0]"><span class="well-label">A8</span></div>
+                        <div id="A9" class="well bg-[#f0f0f0]"><span class="well-label">A9</span></div>
+                        <div id="A10" class="well bg-[#f0f0f0]"><span class="well-label">A10</span></div>
+                        <div id="A11" class="well bg-[#f0f0f0]"><span class="well-label">A11</span></div>
+                        <div id="A12" class="well bg-[#f0f0f0]"><span class="well-label">A12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row B -->
+                    <div class="row-header">B</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="B1" class="well bg-[#f0f0f0]"><span class="well-label">B1</span></div>
+                        <div id="B2" class="well bg-[#f0f0f0]"><span class="well-label">B2</span></div>
+                        <div id="B3" class="well bg-[#f0f0f0]"><span class="well-label">B3</span></div>
+                        <div id="B4" class="well bg-[#f0f0f0]"><span class="well-label">B4</span></div>
+                        <div id="B5" class="well bg-[#f0f0f0]"><span class="well-label">B5</span></div>
+                        <div id="B6" class="well bg-[#f0f0f0]"><span class="well-label">B6</span></div>
+                        <div id="B7" class="well bg-[#f0f0f0]"><span class="well-label">B7</span></div>
+                        <div id="B8" class="well bg-[#f0f0f0]"><span class="well-label">B8</span></div>
+                        <div id="B9" class="well bg-[#f0f0f0]"><span class="well-label">B9</span></div>
+                        <div id="B10" class="well bg-[#f0f0f0]"><span class="well-label">B10</span></div>
+                        <div id="B11" class="well bg-[#f0f0f0]"><span class="well-label">B11</span></div>
+                        <div id="B12" class="well bg-[#f0f0f0]"><span class="well-label">B12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row C -->
+                    <div class="row-header">C</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="C1" class="well bg-[#f0f0f0]"><span class="well-label">C1</span></div>
+                        <div id="C2" class="well bg-[#f0f0f0]"><span class="well-label">C2</span></div>
+                        <div id="C3" class="well bg-[#f0f0f0]"><span class="well-label">C3</span></div>
+                        <div id="C4" class="well bg-[#f0f0f0]"><span class="well-label">C4</span></div>
+                        <div id="C5" class="well bg-[#f0f0f0]"><span class="well-label">C5</span></div>
+                        <div id="C6" class="well bg-[#f0f0f0]"><span class="well-label">C6</span></div>
+                        <div id="C7" class="well bg-[#f0f0f0]"><span class="well-label">C7</span></div>
+                        <div id="C8" class="well bg-[#f0f0f0]"><span class="well-label">C8</span></div>
+                        <div id="C9" class="well bg-[#f0f0f0]"><span class="well-label">C9</span></div>
+                        <div id="C10" class="well bg-[#f0f0f0]"><span class="well-label">C10</span></div>
+                        <div id="C11" class="well bg-[#f0f0f0]"><span class="well-label">C11</span></div>
+                        <div id="C12" class="well bg-[#f0f0f0]"><span class="well-label">C12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row D -->
+                    <div class="row-header">D</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="D1" class="well bg-[#f0f0f0]"><span class="well-label">D1</span></div>
+                        <div id="D2" class="well bg-[#f0f0f0]"><span class="well-label">D2</span></div>
+                        <div id="D3" class="well bg-[#f0f0f0]"><span class="well-label">D3</span></div>
+                        <div id="D4" class="well bg-[#f0f0f0]"><span class="well-label">D4</span></div>
+                        <div id="D5" class="well bg-[#f0f0f0]"><span class="well-label">D5</span></div>
+                        <div id="D6" class="well bg-[#f0f0f0]"><span class="well-label">D6</span></div>
+                        <div id="D7" class="well bg-[#f0f0f0]"><span class="well-label">D7</span></div>
+                        <div id="D8" class="well bg-[#f0f0f0]"><span class="well-label">D8</span></div>
+                        <div id="D9" class="well bg-[#f0f0f0]"><span class="well-label">D9</span></div>
+                        <div id="D10" class="well bg-[#f0f0f0]"><span class="well-label">D10</span></div>
+                        <div id="D11" class="well bg-[#f0f0f0]"><span class="well-label">D11</span></div>
+                        <div id="D12" class="well bg-[#f0f0f0]"><span class="well-label">D12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row E -->
+                    <div class="row-header">E</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="E1" class="well bg-[#f0f0f0]"><span class="well-label">E1</span></div>
+                        <div id="E2" class="well bg-[#f0f0f0]"><span class="well-label">E2</span></div>
+                        <div id="E3" class="well bg-[#f0f0f0]"><span class="well-label">E3</span></div>
+                        <div id="E4" class="well bg-[#f0f0f0]"><span class="well-label">E4</span></div>
+                        <div id="E5" class="well bg-[#f0f0f0]"><span class="well-label">E5</span></div>
+                        <div id="E6" class="well bg-[#f0f0f0]"><span class="well-label">E6</span></div>
+                        <div id="E7" class="well bg-[#f0f0f0]"><span class="well-label">E7</span></div>
+                        <div id="E8" class="well bg-[#f0f0f0]"><span class="well-label">E8</span></div>
+                        <div id="E9" class="well bg-[#f0f0f0]"><span class="well-label">E9</span></div>
+                        <div id="E10" class="well bg-[#f0f0f0]"><span class="well-label">E10</span></div>
+                        <div id="E11" class="well bg-[#f0f0f0]"><span class="well-label">E11</span></div>
+                        <div id="E12" class="well bg-[#f0f0f0]"><span class="well-label">E12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row F -->
+                    <div class="row-header">F</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="F1" class="well bg-[#f0f0f0]"><span class="well-label">F1</span></div>
+                        <div id="F2" class="well bg-[#f0f0f0]"><span class="well-label">F2</span></div>
+                        <div id="F3" class="well bg-[#f0f0f0]"><span class="well-label">F3</span></div>
+                        <div id="F4" class="well bg-[#f0f0f0]"><span class="well-label">F4</span></div>
+                        <div id="F5" class="well bg-[#f0f0f0]"><span class="well-label">F5</span></div>
+                        <div id="F6" class="well bg-[#f0f0f0]"><span class="well-label">F6</span></div>
+                        <div id="F7" class="well bg-[#f0f0f0]"><span class="well-label">F7</span></div>
+                        <div id="F8" class="well bg-[#f0f0f0]"><span class="well-label">F8</span></div>
+                        <div id="F9" class="well bg-[#f0f0f0]"><span class="well-label">F9</span></div>
+                        <div id="F10" class="well bg-[#f0f0f0]"><span class="well-label">F10</span></div>
+                        <div id="F11" class="well bg-[#f0f0f0]"><span class="well-label">F11</span></div>
+                        <div id="F12" class="well bg-[#f0f0f0]"><span class="well-label">F12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row G -->
+                    <div class="row-header">G</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="G1" class="well bg-[#f0f0f0]"><span class="well-label">G1</span></div>
+                        <div id="G2" class="well bg-[#f0f0f0]"><span class="well-label">G2</span></div>
+                        <div id="G3" class="well bg-[#f0f0f0]"><span class="well-label">G3</span></div>
+                        <div id="G4" class="well bg-[#f0f0f0]"><span class="well-label">G4</span></div>
+                        <div id="G5" class="well bg-[#f0f0f0]"><span class="well-label">G5</span></div>
+                        <div id="G6" class="well bg-[#f0f0f0]"><span class="well-label">G6</span></div>
+                        <div id="G7" class="well bg-[#f0f0f0]"><span class="well-label">G7</span></div>
+                        <div id="G8" class="well bg-[#f0f0f0]"><span class="well-label">G8</span></div>
+                        <div id="G9" class="well bg-[#f0f0f0]"><span class="well-label">G9</span></div>
+                        <div id="G10" class="well bg-[#f0f0f0]"><span class="well-label">G10</span></div>
+                        <div id="G11" class="well bg-[#f0f0f0]"><span class="well-label">G11</span></div>
+                        <div id="G12" class="well bg-[#f0f0f0]"><span class="well-label">G12</span></div>
+                    </div>
+                </div>
+                
+                <div class="flex">
+                    <!-- Row H -->
+                    <div class="row-header">H</div>
+                    <div class="flex gap-2 mb-2">
+                        <div id="H1" class="well bg-[#f0f0f0]"><span class="well-label">H1</span></div>
+                        <div id="H2" class="well bg-[#f0f0f0]"><span class="well-label">H2</span></div>
+                        <div id="H3" class="well bg-[#f0f0f0]"><span class="well-label">H3</span></div>
+                        <div id="H4" class="well bg-[#f0f0f0]"><span class="well-label">H4</span></div>
+                        <div id="H5" class="well bg-[#f0f0f0]"><span class="well-label">H5</span></div>
+                        <div id="H6" class="well bg-[#f0f0f0]"><span class="well-label">H6</span></div>
+                        <div id="H7" class="well bg-[#f0f0f0]"><span class="well-label">H7</span></div>
+                        <div id="H8" class="well bg-[#f0f0f0]"><span class="well-label">H8</span></div>
+                        <div id="H9" class="well bg-[#f0f0f0]"><span class="well-label">H9</span></div>
+                        <div id="H10" class="well bg-[#f0f0f0]"><span class="well-label">H10</span></div>
+                        <div id="H11" class="well bg-[#f0f0f0]"><span class="well-label">H11</span></div>
+                        <div id="H12" class="well bg-[#f0f0f0]"><span class="well-label">H12</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Manual Section -->
+    <section id="manual-section" class="manual-section">
+        <button id="back-btn-manual" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        
+        <div class="manual-container">
+            <h1 class="manual-title bellota">Manual de Pipetagem</h1>
+            
+            <div class="manual-content">
+                <h2 class="manual-section-title">1. Introdução à Pipetagem</h2>
+                <p>A pipetagem é uma técnica fundamental em laboratórios de biologia molecular e bioquímica. A precisão na transferência de volumes é essencial para garantir resultados confiáveis em experimentos científicos. Este manual fornece orientações detalhadas sobre como utilizar diferentes tipos de pipetas corretamente e seguir as melhores práticas.</p>
+                
+                <div class="manual-tip">
+                    <div class="manual-tip-title">Dica importante</div>
+                    <p>A precisão na pipetagem pode ser a diferença entre o sucesso e o fracasso de um experimento. Dedique tempo para dominar esta técnica fundamental.</p>
+                </div>
+                
+                <p>Antes de começar qualquer procedimento de pipetagem, é importante entender os princípios básicos de funcionamento das pipetas e como diferentes fatores podem afetar a precisão da transferência de líquidos.</p>
+                
+                <h2 class="manual-section-title">2. Tipos de Pipetas</h2>
+                
+                <h3 class="manual-subsection-title">2.1 Pipetas de Volume Fixo</h3>
+                <p><strong>Pipeta de Volume Fixo</strong></p>
+                <p>Projetadas para dispensar um único volume específico. São simples de usar e geralmente mais precisas para o volume específico para o qual foram projetadas. Ideais para procedimentos repetitivos que requerem sempre o mesmo volume.</p>
+                
+                <div class="flex justify-center my-6">
+                    <svg width="150" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="manual-image">
+                        <rect x="40" y="5" width="20" height="50" rx="3" fill="#0097b2" />
+                        <rect x="42" y="55" width="16" height="5" rx="1" fill="#0097b2" />
+                        <rect x="45" y="60" width="10" height="20" rx="1" fill="#0097b2" opacity="0.7" />
+                        <circle cx="50" cy="85" r="5" fill="#0097b2" opacity="0.5" />
+                        <rect x="48" y="10" width="4" height="40" rx="1" fill="white" opacity="0.3" />
+                        <text x="50" y="30" text-anchor="middle" fill="white" font-size="8">Fixo</text>
+                    </svg>
+                </div>
+                
+                <h3 class="manual-subsection-title">2.2 Pipetas de Volume Ajustável</h3>
+                <p><strong>Pipeta de Volume Ajustável</strong></p>
+                <p>Também chamadas de micropipetas ou pipetas automáticas, elas permitem ajustar o volume dentro de uma faixa específica. São versáteis e adequadas para laboratórios que realizam diversos procedimentos com volumes variados. Geralmente disponíveis em diferentes faixas: P2 (0,2-2µL), P10 (0,1–10µL), P20 (2-20µL), P200 (20-200µL), P1000 (100-1000µL). Utilizam ponteiras específicas para cada capacidade.</p>
+                
+                <div class="flex justify-center my-6">
+                    <svg width="150" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="manual-image">
+                        <rect x="40" y="5" width="20" height="50" rx="3" fill="#0097b2" />
+                        <rect x="35" y="10" width="30" height="10" rx="2" fill="#0097b2" opacity="0.8" />
+                        <rect x="42" y="55" width="16" height="5" rx="1" fill="#0097b2" />
+                        <rect x="45" y="60" width="10" height="20" rx="1" fill="#0097b2" opacity="0.7" />
+                        <circle cx="50" cy="85" r="5" fill="#0097b2" opacity="0.5" />
+                        <rect x="48" y="15" width="4" height="35" rx="1" fill="white" opacity="0.3" />
+                        <text x="50" y="30" text-anchor="middle" fill="white" font-size="8">Ajustável</text>
+                    </svg>
+                </div>
+                
+                <h3 class="manual-subsection-title">2.3 Pipetas Multicanal</h3>
+                <p><strong>Pipeta Multicanal</strong></p>
+                <p>Permitem a transferência simultânea de volumes iguais para múltiplos poços. São essenciais para trabalhos com placas de microtitulação, como placas de 96 poços. Economizam tempo significativo em procedimentos de alto rendimento. Também faz uso de ponteiras específicas.</p>
+                
+                <div class="flex justify-center my-6">
+                    <svg width="200" height="200" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="manual-image">
+                        <rect x="30" y="5" width="90" height="20" rx="3" fill="#0097b2" />
+                        <rect x="35" y="25" width="10" height="40" rx="1" fill="#0097b2" opacity="0.8" />
+                        <rect x="55" y="25" width="10" height="40" rx="1" fill="#0097b2" opacity="0.8" />
+                        <rect x="75" y="25" width="10" height="40" rx="1" fill="#0097b2" opacity="0.8" />
+                        <rect x="95" y="25" width="10" height="40" rx="1" fill="#0097b2" opacity="0.8" />
+                        <rect x="105" y="25" width="10" height="40" rx="1" fill="#0097b2" opacity="0.8" />
+                        <text x="75" y="17" text-anchor="middle" fill="white" font-size="8">Multicanal</text>
+                    </svg>
+                </div>
+                
+                <h3 class="manual-subsection-title">2.4 Pipetas Eletrônicas</h3>
+                <p><strong>Pipeta Eletrônica</strong></p>
+                <p>Utilizam motores para aspirar e dispensar líquidos, reduzindo a fadiga do operador e aumentando a precisão. Oferecem modos especiais como dispensação repetitiva, diluição e titulação. São ideais para procedimentos longos ou que exigem alta precisão.</p>
+                
+                <div class="flex justify-center my-6">
+                    <svg width="150" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="manual-image">
+                        <rect x="35" y="5" width="30" height="50" rx="3" fill="#0097b2" />
+                        <rect x="40" y="15" width="20" height="10" rx="1" fill="#333" />
+                        <rect x="42" y="55" width="16" height="5" rx="1" fill="#0097b2" />
+                        <rect x="45" y="60" width="10" height="20" rx="1" fill="#0097b2" opacity="0.7" />
+                        <circle cx="50" cy="85" r="5" fill="#0097b2" opacity="0.5" />
+                        <text x="50" y="22" text-anchor="middle" fill="white" font-size="6">LCD</text>
+                        <text x="50" y="40" text-anchor="middle" fill="white" font-size="8">Eletrônica</text>
+                    </svg>
+                </div>
+                
+                <h2 class="manual-section-title">3. Tipos de Ponteiras</h2>
+                
+                <h3 class="manual-subsection-title">3.1 Ponteiras Comuns (universais)</h3>
+                <ul class="manual-list">
+                    <li><strong>Cores padrão:</strong>
+                        <ul class="manual-sublist">
+                            <li>Azul ou incolor (1000 µL), amarela (200 µL), incolor (10/20 µL).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Uso:</strong> Pipetagem geral de líquidos não agressivos.</li>
+                </ul>
+                
+                <h3 class="manual-subsection-title">3.2 Ponteiras com filtro</h3>
+                <ul class="manual-list">
+                    <li><strong>Descrição:</strong> Contêm barreira de celulose para evitar contaminação.</li>
+                    <li><strong>Uso:</strong> Manipulação de ácidos nucleicos, reagentes tóxicos ou PCR.</li>
+                    <li><strong>Vantagem:</strong> Previne contaminação cruzada por aerossóis.</li>
+                </ul>
+                
+                <h3 class="manual-subsection-title">3.3 Ponteiras estéreis</h3>
+                <ul class="manual-list">
+                    <li><strong>Uso:</strong> Experimentos em microbiologia ou cultivo celular.</li>
+                    <li><strong>Obs.:</strong> Nunca reutilize ponteiras estéreis após o primeiro uso.</li>
+                </ul>
+                
+                <h2 class="manual-section-title">4. Utilidades da Pipetagem no Laboratório</h2>
+                <ul class="manual-list">
+                    <li>Montagem de reações químicas ou biológicas.</li>
+                    <li>Transferência precisa de volumes pequenos.</li>
+                    <li>Preparo de soluções e diluições.</li>
+                    <li>Coleta e distribuição de amostras.</li>
+                </ul>
+                
+                <h2 class="manual-section-title">5. Como Usar Micropipetas Corretamente</h2>
+                
+                <h3 class="manual-subsection-title">5.1 Ajuste do volume</h3>
+                <ul class="manual-list">
+                    <li>Puxe o botão giratório, e gire-o para regular o volume desejado.</li>
+                    <li>Nunca ultrapasse os limites máximo e mínimo da pipeta.</li>
+                    <li>Aperte o dispensador para travar o volume.</li>
+                </ul>
+                
+                <h3 class="manual-subsection-title">5.2 Colocação da ponteira</h3>
+                <ul class="manual-list">
+                    <li>Insira a ponta da pipeta na ponteira com firmeza.</li>
+                    <li>Encaixe firmemente para evitar vazamentos (nunca bata a ponteira).</li>
+                    <li>Não toque na parte inferior para evitar contaminação.</li>
+                </ul>
+                
+                <h3 class="manual-subsection-title">5.3 Aspiração do líquido</h3>
+                <ul class="manual-list">
+                    <li>Pressione o êmbolo até o primeiro estágio/ ponto de resistência.</li>
+                    <li>Mergulhe a ponteira no líquido (2-3 mm) (evite encostar no fundo do frasco).</li>
+                    <li>Solte lentamente para aspirar.</li>
+                </ul>
+                
+                <h3 class="manual-subsection-title">5.4 Dispensa do líquido</h3>
+                <ul class="manual-list">
+                    <li>Pressione até o primeiro estágio para liberar o volume.</li>
+                    <li>Pressione até o segundo estágio para eliminar resíduos.</li>
+                </ul>
+                
+                <h3 class="manual-subsection-title">5.5 Descarte da ponteira</h3>
+                <ul class="manual-list">
+                    <li>Ejete a ponteira diretamente no coletor de resíduos (não remova com as mãos).</li>
+                </ul>
+                
+                <h2 class="manual-section-title">6. Cuidados e Boas Práticas</h2>
+                <ul class="manual-list">
+                    <li>Nunca pipete sem ponteira.</li>
+                    <li>Evite inclinar excessivamente a micropipeta.</li>
+                    <li>Mantenha o equipamento sempre limpo.</li>
+                    <li>Use sempre ponteiras compatíveis.</li>
+                    <li>Não force o volume além do limite indicado.</li>
+                    <li>Treine a ergonomia para evitar lesões por esforço repetitivo.</li>
+                    <li>Nunca deite a micropipeta com líquido no interior.</li>
+                    <li>Calibração: Realize a cada 6–12 meses (ou conforme normas do laboratório).</li>
+                    <li>Armazenamento: Guarde na posição vertical (suporte próprio).</li>
+                </ul>
+                
+                <h2 class="manual-section-title">7. Principais Erros a Evitar</h2>
+                <ul class="manual-list">
+                    <li>Aspirar líquido diretamente para o corpo da pipeta.</li>
+                    <li>Ajustar volume com a ponteira já contendo líquido.</li>
+                    <li>Pipetar rapidamente, gerando bolhas.</li>
+                    <li>Não verificar se a ponteira está bem encaixada.</li>
+                    <li>Pipetar com angulação incorreta (causa subestimação do volume).</li>
+                </ul>
+                
+                <h2 class="manual-section-title">8. Segurança no Laboratório</h2>
+                <ul class="manual-list">
+                    <li>Utilize sempre equipamentos de proteção individual (EPI): luvas, jaleco, óculos.</li>
+                    <li>Pipete substâncias tóxicas sob capela.</li>
+                    <li>Conheça as fichas de segurança dos reagentes.</li>
+                </ul>
+                
+                <h2 class="manual-section-title">9. Manutenção e Conservação</h2>
+                <ul class="manual-list">
+                    <li>Limpe o corpo da pipeta com álcool 70% (evite acetona).</li>
+                    <li>Verifique vazamentos: Se houver resistência anormal busque manutenção.</li>
+                    <li>Lubrificação de componentes internos conforme indicação do fabricante.</li>
+                    <li>Checagem de vedação.</li>
+                    <li>Armazenamento em suporte próprio.</li>
+                </ul>
+                
+                <h2 class="manual-section-title">10. Glossário Rápido</h2>
+                <table class="glossary-table">
+                    <tr>
+                        <th>Termo</th>
+                        <th>Significado</th>
+                    </tr>
+                    <tr>
+                        <td>Microlitro (µL)</td>
+                        <td>Um milésimo de mililitro (muito usado na pipetagem)</td>
+                    </tr>
+                    <tr>
+                        <td>EPI</td>
+                        <td>Equipamento de Proteção Individual</td>
+                    </tr>
+                    <tr>
+                        <td>Contaminação cruzada</td>
+                        <td>Transferência indesejada de substâncias entre amostras</td>
+                    </tr>
+                    <tr>
+                        <td>Capela</td>
+                        <td>Equipamento para manipulação segura de substâncias voláteis ou tóxicas</td>
+                    </tr>
+                    <tr>
+                        <td>Paralaxe</td>
+                        <td>Erro de leitura devido ao ângulo de visão (evite em pipetas graduadas)</td>
+                    </tr>
+                    <tr>
+                        <td>Aerossol</td>
+                        <td>Partículas suspensas que podem contaminar amostras ou o usuário</td>
+                    </tr>
+                </table>
+                
+                <h2 class="manual-section-title">11. Conclusão</h2>
+                <p>Pipetar com precisão é um diferencial para qualquer profissional de laboratório. Treine com paciência, siga as orientações de segurança e mantenha o equipamento em perfeitas condições. Com o tempo, a pipetagem se tornará uma habilidade natural e indispensável.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Checklist Section -->
+    <section id="checklist-section" class="checklist-section">
+        <button id="back-btn-checklist" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        
+        <div class="checklist-container">
+            <h1 class="checklist-title bellota">Checklist de Segurança e Precisão</h1>
+            
+            <div class="checklist-section">
+                <h2 class="checklist-section-title">1. Antes de pipetar:</h2>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check1" class="checklist-checkbox">
+                    <label for="check1" class="checklist-label">Verifique a calibração da pipeta</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check2" class="checklist-checkbox">
+                    <label for="check2" class="checklist-label">Use EPI (Jaleco, luvas, óculos...)</label>
+                </div>
+            </div>
+            
+            <div class="checklist-section">
+                <h2 class="checklist-section-title">2. Durante a pipetagem:</h2>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check3" class="checklist-checkbox">
+                    <label for="check3" class="checklist-label">Evite inclinar a pipeta</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check4" class="checklist-checkbox">
+                    <label for="check4" class="checklist-label">Observe se o volume de líquido está correto</label>
+                </div>
+            </div>
+            
+            <div class="checklist-section">
+                <h2 class="checklist-section-title">3. Após o uso:</h2>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check5" class="checklist-checkbox">
+                    <label for="check5" class="checklist-label">Limpe a pipeta com álcool 70%</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check6" class="checklist-checkbox">
+                    <label for="check6" class="checklist-label">Armazene na posição vertical</label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all sections
+            const coverSection = document.getElementById('cover-section');
+            const appSection = document.getElementById('app-section');
+            const manualSection = document.getElementById('manual-section');
+            const checklistSection = document.getElementById('checklist-section');
+            
+            // Get all navigation buttons
+            const plateBtn = document.getElementById('plate-btn');
+            const manualBtn = document.getElementById('manual-btn');
+            const checklistBtn = document.getElementById('checklist-btn');
+            const backBtnApp = document.getElementById('back-btn-app');
+            const backBtnManual = document.getElementById('back-btn-manual');
+            const backBtnChecklist = document.getElementById('back-btn-checklist');
+            
+            // Navigation to app section
+            plateBtn.addEventListener('click', function() {
+                coverSection.style.display = 'none';
+                appSection.style.display = 'block';
+                manualSection.style.display = 'none';
+                checklistSection.style.display = 'none';
+            });
+            
+            // Navigation to manual section
+            manualBtn.addEventListener('click', function() {
+                coverSection.style.display = 'none';
+                appSection.style.display = 'none';
+                manualSection.style.display = 'block';
+                checklistSection.style.display = 'none';
+            });
+            
+            // Navigation to checklist section
+            checklistBtn.addEventListener('click', function() {
+                coverSection.style.display = 'none';
+                appSection.style.display = 'none';
+                manualSection.style.display = 'none';
+                checklistSection.style.display = 'block';
+            });
+            
+            // Back buttons
+            backBtnApp.addEventListener('click', function() {
+                appSection.style.display = 'none';
+                coverSection.style.display = 'flex';
+            });
+            
+            backBtnManual.addEventListener('click', function() {
+                manualSection.style.display = 'none';
+                coverSection.style.display = 'flex';
+            });
+            
+            backBtnChecklist.addEventListener('click', function() {
+                checklistSection.style.display = 'none';
+                coverSection.style.display = 'flex';
+            });
+            
+            // Get all wells
+            const wells = document.querySelectorAll('.well');
+            const resetBtn = document.getElementById('reset-btn');
+            const selectedCounter = document.getElementById('selected-counter');
+            
+            // Function to update counter
+            function updateCounter() {
+                const selectedWells = document.querySelectorAll('.bg-\\[\\#0097b2\\]').length;
+                selectedCounter.textContent = selectedWells;
+            }
+            
+            // Add click event to each well
+            wells.forEach(well => {
+                well.addEventListener('click', function() {
+                    // Toggle color
+                    if (this.classList.contains('bg-[#f0f0f0]')) {
+                        this.classList.remove('bg-[#f0f0f0]');
+                        this.classList.add('bg-[#0097b2]');
+                    } else {
+                        this.classList.remove('bg-[#0097b2]');
+                        this.classList.add('bg-[#f0f0f0]');
+                    }
+                    
+                    // Update counter
+                    updateCounter();
+                });
+            });
+            
+            // Reset button functionality
+            resetBtn.addEventListener('click', function() {
+                wells.forEach(well => {
+                    well.classList.remove('bg-[#0097b2]');
+                    well.classList.add('bg-[#f0f0f0]');
+                });
+                
+                // Update counter
+                updateCounter();
+            });
+            
+            // Checklist functionality
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.style.backgroundColor = '#4CAF50';
+                        this.style.borderColor = '#4CAF50';
+                    } else {
+                        this.style.backgroundColor = '';
+                        this.style.borderColor = '#0097b2';
+                    }
+                });
+            });
         });
-        updateChecklistProgress();
-    });
-
-    // Atualiza inicialmente
-    updateChecklistProgress();
-});
+    </script>
+</body>
+</html>
